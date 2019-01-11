@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.depi.entity.Student;
@@ -20,9 +21,10 @@ public class StudentService {
 		return this.studentRepository.save(student);
 	}
 	
-	public void delete(Long studentId) {
+	public ResponseEntity<?> delete(Long studentId) {
 		Student student = this.studentRepository.findById(studentId).orElse(null);
 		this.studentRepository.delete(student);
+		return ResponseEntity.ok().build();
 	}
 	
 	public List<Student> getAllStudents() {
@@ -35,5 +37,16 @@ public class StudentService {
 	public Student getStudentById(Long studentId) {
 		return this.studentRepository.findById(studentId)
 					.orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
+	}
+	
+	public Student updateStudent(Long studentId, Student studentDetails) {
+		Student student = this.studentRepository.findById(studentId)
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentDetails));
+		student.setName(studentDetails.getName());
+		student.setLastName(studentDetails.getLastName());
+		student.setStudentNumber(studentDetails.getStudentNumber());
+		student.setThesis(studentDetails.getThesis());
+		
+		return this.studentRepository.save(student);
 	}
 }
