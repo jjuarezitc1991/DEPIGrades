@@ -21,6 +21,7 @@ public class StudentTest extends AbstractTestNGSpringContextTests {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentTest.class);
 	
 	private Long studentGeneratedId;
+	private final String SUBSTITUTION_NAME = "Diana";
 	
 	@Autowired
 	private StudentService studentService;
@@ -41,10 +42,20 @@ public class StudentTest extends AbstractTestNGSpringContextTests {
 	@Test(priority = 2)
 	public void listStudentsTest() {
 		List<Student> students = this.studentService.getAllStudents();
-		assertThat(students.size()).isGreaterThan(2);
+		assertThat(students.size()).isGreaterThan(1);
 	}
 	
-	@Test(priority = 3,
+	@Test(priority = 3)
+	public void updateStudentTest() {
+		Student student = this.studentService.getStudentById(studentGeneratedId);
+		student.setName(this.SUBSTITUTION_NAME);
+		this.studentService.saveStudent(student);
+		
+		Student updatedStudent = this.studentService.getStudentById(studentGeneratedId);
+		assertThat(updatedStudent.getName()).isEqualTo(this.SUBSTITUTION_NAME);
+	}
+	
+	@Test(priority = 4,
 			expectedExceptions = { ResourceNotFoundException.class } )
 	public void deleteStudentTest() {
 		this.studentService.delete(this.studentGeneratedId);
