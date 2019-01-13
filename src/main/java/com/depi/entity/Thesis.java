@@ -24,7 +24,7 @@ public class Thesis {
 	private long id;
 	private String title;
 	
-	@OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(optional = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Student student;
 	
 	@OneToOne(optional = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
