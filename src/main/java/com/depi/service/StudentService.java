@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.depi.entity.Student;
+import com.depi.entity.Thesis;
 import com.depi.exception.ResourceNotFoundException;
 import com.depi.repository.StudentRepository;
 
@@ -15,7 +16,9 @@ import com.depi.repository.StudentRepository;
 public class StudentService {
 	
 	@Autowired
-	StudentRepository studentRepository;
+	private StudentRepository studentRepository;
+	@Autowired
+	private ThesisService thesisService;;
 	
 	public Student saveStudent(Student student) {
 		return this.studentRepository.save(student);
@@ -48,5 +51,15 @@ public class StudentService {
 		student.setThesis(studentDetails.getThesis());
 		
 		return this.studentRepository.save(student);
+	}
+
+	public Student assignThesis(Long studentId, Long thesisId) {
+		Student student = getStudentById(studentId);
+		Thesis thesis = thesisService.getThesisById(thesisId);
+		
+		student.setThesis(thesis);
+		thesis.setStudent(student);
+		
+		return saveStudent(student);
 	}
 }

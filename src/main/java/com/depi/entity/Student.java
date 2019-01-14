@@ -26,7 +26,7 @@ public class Student {
 	private String name;
 	private String lastName;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Thesis thesis;
 	
 	public Student() {}
