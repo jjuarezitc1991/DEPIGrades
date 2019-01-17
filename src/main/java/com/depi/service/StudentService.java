@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.depi.entity.Student;
@@ -24,10 +23,12 @@ public class StudentService {
 		return this.studentRepository.save(student);
 	}
 	
-	public ResponseEntity<?> delete(Long studentId) {
-		Student student = this.studentRepository.findById(studentId).orElse(null);
+	public void delete(Long studentId) {
+		Student student = this.studentRepository.findById(studentId)
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
+		student.getThesis().setStudent(null);
+		student.setThesis(null);
 		this.studentRepository.delete(student);
-		return ResponseEntity.ok().build();
 	}
 	
 	public List<Student> getAllStudents() {
