@@ -23,35 +23,43 @@ import com.depi.service.StudentService;
 @RestController
 @RequestMapping("/api/student")
 public class StudentController {
-	
+
 	@Autowired
 	private StudentService studentService;
-	
+
 	@GetMapping("/")
 	public ResponseEntity<List<Student>> getAllUsers() {
 		return new ResponseEntity<>(studentService.getAllStudents(), HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/")
-	public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student, BindingResult result){
-		if(result.hasErrors()) {
+	public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student, BindingResult result) {
+		if (result.hasErrors()) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(studentService.saveStudent(student), HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Student> getStudentById(@PathVariable(value="id") Long studentId){
+	public ResponseEntity<Student> getStudentById(@PathVariable(value = "id") Long studentId) {
 		return new ResponseEntity<>(studentService.getStudentById(studentId), HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<Student> updateStudent(@PathVariable(value="id") Long studentId, @Valid @RequestBody Student studentDetails) {
+	public ResponseEntity<Student> updateStudent(@PathVariable(value = "id") Long studentId,
+			@Valid @RequestBody Student studentDetails) {
 		return new ResponseEntity<>(studentService.updateStudent(studentId, studentDetails), HttpStatus.OK);
 	}
-	
-	@DeleteMapping("{id}")
-	public ResponseEntity<?> deleteStudent(@PathVariable(value="id") Long studentId) {
-		return this.studentService.delete(studentId);
+
+	@DeleteMapping("/{id}")
+	public void deleteStudent(@PathVariable(value = "id") Long studentId) {
+		this.studentService.delete(studentId);
 	}
+
+	@PutMapping("/{idStudent}/thesis/{idThesis}")
+	public ResponseEntity<?> assignThesisToStudent(@PathVariable(value = "idStudent") Long studentId,
+												   @PathVariable(value = "idThesis") Long thesisId) {
+		return new ResponseEntity<>(studentService.assignThesis(studentId, thesisId), HttpStatus.OK);
+	}
+
 }

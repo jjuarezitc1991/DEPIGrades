@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.Test;
 
 import com.depi.exception.ResourceNotFoundException;
@@ -25,7 +24,6 @@ public class ThesisTest extends AbstractTestNGSpringContextTests{
 	
 	private final String THESIS_TITLE = "Estudio de la Máquina Virtual en Java 11";
 	private final String NEW_THESIS_TITLE = "Estudio de la Máquina Virtual en Java 10";
-	private final String STUDENT_NAME = "Gisel";
 	private Long thesisGeneratedId;
 	
 	@Test(priority = 1)
@@ -54,20 +52,6 @@ public class ThesisTest extends AbstractTestNGSpringContextTests{
 		
 		Thesis updatedThesis = thesisService.getThesisById(this.thesisGeneratedId);
 		assertThat(updatedThesis.getTitle()).isEqualTo(this.NEW_THESIS_TITLE);
-	}
-	
-	@Test(priority = 4)
-	@Transactional
-	public void asignStudentToThesisTest() {
-		Student student = new Student();
-		student.setName(STUDENT_NAME);
-		
-		Thesis thesis = thesisService.getThesisById(this.thesisGeneratedId);
-		thesis.setStudent(student);
-		thesisService.saveThesis(thesis);
-		
-		Thesis updatedThesis = thesisService.getThesisById(this.thesisGeneratedId);
-		assertThat(updatedThesis.getStudent().getName()).isEqualTo(this.STUDENT_NAME);
 	}
 	
 	@Test(priority = 5,

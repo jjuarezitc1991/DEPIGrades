@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.depi.entity.Student;
+import com.depi.entity.Thesis;
 import com.depi.exception.ResourceNotFoundException;
 import com.depi.repository.StudentRepository;
 
@@ -15,16 +15,20 @@ import com.depi.repository.StudentRepository;
 public class StudentService {
 	
 	@Autowired
-	StudentRepository studentRepository;
+	private StudentRepository studentRepository;
+	@Autowired
+	private ThesisService thesisService;;
 	
 	public Student saveStudent(Student student) {
 		return this.studentRepository.save(student);
 	}
 	
-	public ResponseEntity<?> delete(Long studentId) {
-		Student student = this.studentRepository.findById(studentId).orElse(null);
+	public void delete(Long studentId) {
+		Student student = this.studentRepository.findById(studentId)
+				.orElseThrow(() -> new ResourceNotFoundException("Student", "id", studentId));
+		student.getThesis().setStudent(null);
+		student.setThesis(null);
 		this.studentRepository.delete(student);
-		return ResponseEntity.ok().build();
 	}
 	
 	public List<Student> getAllStudents() {
@@ -48,5 +52,15 @@ public class StudentService {
 		student.setThesis(studentDetails.getThesis());
 		
 		return this.studentRepository.save(student);
+	}
+
+	public Student assignThesis(Long studentId, Long thesisId) {
+		Student student = getStudentById(studentId);
+		Thesis thesis = thesisService.getThesisById(thesisId);
+		
+		student.setThesis(thesis);
+		thesis.setStudent(student);
+		
+		return saveStudent(student);
 	}
 }
